@@ -29,10 +29,14 @@ public class Area extends JFrame {
                     writer.write("HSV in point (" + i + "," + j + ") is (" + (int) hsv[0] + "," + (int) hsv[1] + "," + (int) hsv[2] + ")  ");
                     writer.write("LAB in point (" + i + "," + j + ") is (" + (int) lab[0] + "," + (int) lab[1] + "," + (int) lab[2] + ")");
                     writer.append('\n');
-                } catch(Exception e){}
+                } catch(Exception e){
+                    System.out.println("Fail");
+                }
             }
         }
-
+        try {
+            writer.flush();
+        } catch (IOException e) {}
         JTextArea textArea = new JTextArea();
         try{
             textArea.read(reader, false);

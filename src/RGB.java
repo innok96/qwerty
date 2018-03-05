@@ -1,4 +1,5 @@
-import java.awt.*;
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
 
 public class RGB {
     public int R, G, B;
@@ -10,6 +11,9 @@ public class RGB {
     }
 
     public int toInt(int alpha){
+        R=min(R, 255); R=max(R, 0);
+        G=min(G, 255); G=max(G, 0);
+        B=min(B, 255); B=max(B, 0);
         return alpha*256*256*256+(int)R*256*256+(int)G*256+(int)B;
     }
 
