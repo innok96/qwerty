@@ -1,5 +1,6 @@
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
+import static java.lang.Math.*;
 
 public class RGB {
     public int R, G, B;
@@ -44,6 +45,37 @@ public class RGB {
             case 4 : {R=(int)(255.*var_3); G=(int)(255.*var_1); B=(int)(255.*V); break;}
             default: {R=(int)(255.*V); G=(int)(255.*var_1); B=(int)(255.*var_2); break;}
         }
+    }
+
+    public RGB(double lab[], boolean flag){
+        double var_Y = ( lab[0] + 16. ) / 116.;
+        double var_X = lab[1] / 500. + var_Y;
+        double var_Z = var_Y - lab[2] / 200.;
+
+        if ( Math.pow(var_Y, 3.)  > 0.008856 ) var_Y = Math.pow(var_Y, 3.);
+        else var_Y = ( var_Y - 16. / 116. ) / 7.787;
+        if ( Math.pow(var_X, 3.)  > 0.008856 ) var_X = Math.pow(var_X, 3);
+        else var_X = ( var_X - 16. / 116. ) / 7.787;
+        if ( Math.pow(var_Z, 3.)  > 0.008856 ) var_Z = Math.pow(var_Z, 3.);
+        else var_Z = ( var_Z - 16. / 116. ) / 7.787;
+
+        double X = var_X * 95.047, Y = var_Y * 100.000, Z = var_Z * 108.883;
+        var_X = X/100; var_Y = Y/100; var_Z = Z/100;
+
+        double var_R = var_X *  3.2406 + var_Y * -1.5372 + var_Z * -0.4986;
+        double var_G = var_X * -0.9689 + var_Y *  1.8758 + var_Z *  0.0415;
+        double var_B = var_X *  0.0557 + var_Y * -0.2040 + var_Z *  1.0570;
+
+        if ( var_R > 0.0031308 ) var_R = 1.055 * ( Math.pow(var_R, 1. / 2.4 ) ) - 0.055;
+        else var_R = 12.92 * var_R;
+        if ( var_G > 0.0031308 ) var_G = 1.055 * ( Math.pow(var_G , 1 / 2.4 ) ) - 0.055;
+        else var_G = 12.92 * var_G;
+        if ( var_B > 0.0031308 ) var_B = 1.055 * ( Math.pow(var_B , 1 / 2.4 ) ) - 0.055;
+        else var_B = 12.92 * var_B;
+
+        R = (int)(var_R * 255);
+        G = (int)(var_G * 255);
+        B = (int)(var_B * 255);
     }
 
     public double[] getHSV() {
@@ -107,5 +139,15 @@ public class RGB {
 
         lab[0]=L; lab[1]=A; lab[2]=B;
         return lab;
+    }
+
+    public double[] getLCH(){
+        double[] Lab=getLAB();
+        double var_H = atan2(Lab[1], Lab[2]);
+        if ( var_H > 0 ) var_H = ( var_H / PI ) * 180.;
+        else var_H = 360 - ( abs( var_H ) / PI ) * 180.;
+
+        double[] LCH = {Lab[0], sqrt( Math.pow(Lab[1] , 2) + Math.pow(Lab[2] , 2) ), var_H};
+        return LCH;
     }
 }
